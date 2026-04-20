@@ -8,5 +8,4 @@ export interface Tile {
 
 export interface ParsedMap {
   grid: Tile[][];
-  cabanas: { id: string }[];
 }
