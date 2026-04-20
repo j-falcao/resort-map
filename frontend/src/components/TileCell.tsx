@@ -20,9 +20,10 @@ type Props = {
   row: number;
   col: number;
   grid: Tile[][];
+  onCabanaClick?: (id: string) => void;
 };
 
-export default function TileCell({ tile, row, col, grid }: Props) {
+export default function TileCell({ tile, row, col, grid, onCabanaClick }: Props) {
   const baseStyle: React.CSSProperties = {
     width: 40,
     height: 40,
@@ -167,8 +168,10 @@ export default function TileCell({ tile, row, col, grid }: Props) {
               alert("Cabana not available");
               return;
             }
-            alert(`Cabana: ${tile.id}`);
+
+            onCabanaClick?.(tile.id!);
           }}
+
           onMouseEnter={(e) => {
             if (tile.available) e.currentTarget.style.transform = "scale(1.05)";
           }}
