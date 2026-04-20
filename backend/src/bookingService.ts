@@ -3,8 +3,8 @@ import fs from "fs";
 const bookedCabanas = new Set<string>();
 
 type Guest = {
-    room: string;
-    name: string;
+  room: string;
+  guestName: string;
 };
 
 let validGuests: Guest[] = [];
@@ -15,9 +15,9 @@ export function loadGuests(filePath: string) {
   validGuests = JSON.parse(content);
 }
 
-function isValidGuest(room: string, name: string): boolean {
+function isValidGuest(room: string, guestName: string): boolean {
   return validGuests.some(
-    (g) => g.room === room && g.name.toLowerCase() === name.toLowerCase()
+    (g) => g.room === room && g.guestName.toLowerCase() === guestName.toLowerCase()
   );
 }
 
@@ -28,9 +28,9 @@ export function isCabanaBooked(id: string) {
 export function bookCabana(
   cabanaId: string,
   room: string,
-  name: string
+  guestName: string
 ) {
-  if (!isValidGuest(room, name)) {
+  if (!isValidGuest(room, guestName)) {
     return { success: false, error: "Invalid guest credentials" };
   }
 
