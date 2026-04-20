@@ -9,3 +9,4 @@ export interface Tile {
 export interface ParsedMap {
   grid: Tile[][];
 }
+
