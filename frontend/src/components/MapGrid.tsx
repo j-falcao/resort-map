@@ -17,11 +17,17 @@ type MapData = {
 export default function MapGrid() {
   const [map, setMap] = useState<MapData | null>(null);
   const [selectedCabana, setSelectedCabana] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+    if (message) {
+      const t = setTimeout(() => setMessage(null), 2000);
+      return () => clearTimeout(t);
+    }
+
     fetchMap().then(setMap);
-  }, [refreshKey]);
+  }, [refreshKey, message]);
 
   if (!map) return <div>Loading map...</div>;
 
@@ -40,7 +46,14 @@ export default function MapGrid() {
             row={r}
             col={c}
             grid={map.grid}
-            onCabanaClick={(id) => setSelectedCabana(id)}
+            onCabanaClick={(id, available) => {
+              if (!available) {
+                setMessage("Cabana is not available");
+                return;
+              }
+              setSelectedCabana(id);
+            }}
+
           />
         ))
       )}
@@ -51,6 +64,23 @@ export default function MapGrid() {
           onSuccess={() => setRefreshKey((k) => k + 1)}
         />
       )}
+      {message && (
+        <div style={toastStyle}>
+          {message}
+        </div>
+      )}
+
     </div>
   );
 }
+
+const toastStyle: React.CSSProperties = {
+  position: "fixed",
+  bottom: 20,
+  left: "50%",
+  transform: "translateX(-50%)",
+  background: "#333",
+  color: "white",
+  padding: "10px 16px",
+  borderRadius: 6,
+};

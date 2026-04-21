@@ -20,7 +20,7 @@ type Props = {
   row: number;
   col: number;
   grid: Tile[][];
-  onCabanaClick?: (id: string) => void;
+  onCabanaClick?: (id: string, available: boolean) => void;
 };
 
 export default function TileCell({ tile, row, col, grid, onCabanaClick }: Props) {
@@ -164,13 +164,9 @@ export default function TileCell({ tile, row, col, grid, onCabanaClick }: Props)
             transition: "transform 0.1s",
           }}
           onClick={() => {
-            if (!tile.available) {
-              alert("Cabana not available");
-              return;
-            }
-
-            onCabanaClick?.(tile.id!);
+            onCabanaClick?.(tile.id!, tile.available!);
           }}
+
 
           onMouseEnter={(e) => {
             if (tile.available) e.currentTarget.style.transform = "scale(1.05)";
