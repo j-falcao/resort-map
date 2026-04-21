@@ -23,44 +23,50 @@ export default function BookingModal({ cabanaId, onClose, onSuccess }: Props) {
       onSuccess();
       onClose();
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Unexpected error");
-      }
+      setError(err instanceof Error ? err.message : "Unexpected error");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div style={overlayStyle}>
-      <div style={modalStyle}>
-        <h3>Book Cabana</h3>
-        <p>{cabanaId}</p>
+    <div style={overlayStyle} onClick={onClose}>
+      <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+        <h2 style={{ margin: 0 }}>Book Cabana</h2>
+        <p style={{ color: "#666", marginTop: 4 }}>Cabana: {cabanaId}</p>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            placeholder="Room number"
-            value={room}
-            onChange={(e) => setRoom(e.target.value)}
-            required
-          />
-          <input
-            placeholder="Guest name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <label>
+            Room number
+            <input
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              required
+              style={inputStyle}
+            />
+          </label>
 
-          {error && <p style={{ color: "red" }}>{error}</p>}
+          <label>
+            Guest name
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              style={inputStyle}
+            />
+          </label>
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Booking..." : "Book"}
-          </button>
+          {error && <div style={errorStyle}>{error}</div>}
+
+          <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+            <button type="submit" disabled={loading} style={primaryButton}>
+              {loading ? "Booking..." : "Confirm"}
+            </button>
+            <button type="button" onClick={onClose} style={secondaryButton}>
+              Cancel
+            </button>
+          </div>
         </form>
-
-        <button onClick={onClose}>Cancel</button>
       </div>
     </div>
   );
@@ -69,17 +75,52 @@ export default function BookingModal({ cabanaId, onClose, onSuccess }: Props) {
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
-  background: "rgba(0,0,0,0.3)",
+  background: "rgba(0,0,0,0.4)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  backdropFilter: "blur(2px)",
 };
 
 const modalStyle: React.CSSProperties = {
   background: "white",
-  padding: 20,
-  borderRadius: 8,
-  display: "flex",
-  flexDirection: "column",
-  gap: 10,
+  padding: 24,
+  borderRadius: 12,
+  width: 320,
+  boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: 8,
+  marginTop: 4,
+  borderRadius: 6,
+  border: "1px solid #ccc",
+  boxSizing: "border-box",
+};
+
+const errorStyle: React.CSSProperties = {
+  color: "#b00020",
+  background: "#ffe6e6",
+  padding: 8,
+  borderRadius: 6,
+};
+
+const primaryButton: React.CSSProperties = {
+  flex: 1,
+  padding: 10,
+  background: "#007bff",
+  color: "white",
+  border: "none",
+  borderRadius: 6,
+  cursor: "pointer",
+};
+
+const secondaryButton: React.CSSProperties = {
+  flex: 1,
+  padding: 10,
+  background: "#eee",
+  border: "none",
+  borderRadius: 6,
+  cursor: "pointer",
 };
