@@ -32,31 +32,36 @@ export default function MapGrid() {
   if (!map) return <div>Loading map...</div>;
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${map.grid[0].length}, 50px)`,
-      }}
-    >
-      {map.grid.map((row, r) =>
-        row.map((tile, c) => (
-          <TileCell
-            key={`${r}-${c}`}
-            tile={tile}
-            row={r}
-            col={c}
-            grid={map.grid}
-            onCabanaClick={(id, available) => {
-              if (!available) {
-                setMessage("Cabana is not available");
-                return;
-              }
-              setSelectedCabana(id);
-            }}
+    <div style={wrapperStyle}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${map.grid[0].length}, 50px)`,
+          backgroundImage: `url("/src/assets/parchmentBasic.png")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {map.grid.map((row, r) =>
+          row.map((tile, c) => (
+            <TileCell
+              key={`${r}-${c}`}
+              tile={tile}
+              row={r}
+              col={c}
+              grid={map.grid}
+              onCabanaClick={(id, available) => {
+                if (!available) {
+                  setMessage("Cabana is not available");
+                  return;
+                }
+                setSelectedCabana(id);
+              }}
+            />
+          ))
+        )}
+      </div>
 
-          />
-        ))
-      )}
       {selectedCabana && (
         <BookingModal
           cabanaId={selectedCabana}
@@ -64,14 +69,11 @@ export default function MapGrid() {
           onSuccess={() => setRefreshKey((k) => k + 1)}
         />
       )}
-      {message && (
-        <div style={toastStyle}>
-          {message}
-        </div>
-      )}
 
+      {message && <div style={toastStyle}>{message}</div>}
     </div>
   );
+
 }
 
 const toastStyle: React.CSSProperties = {
@@ -83,4 +85,11 @@ const toastStyle: React.CSSProperties = {
   color: "white",
   padding: "10px 16px",
   borderRadius: 6,
+};
+
+const wrapperStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "100vh", // full screen height
 };
