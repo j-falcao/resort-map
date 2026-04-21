@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BookingModal from "./BookingModal";
 import { fetchMap } from "../api";
 import TileCell from "./TileCell";
+import bg from "../assets/parchmentBasic.png";
 
 type Tile =
   | { type: "empty" }
@@ -37,7 +38,7 @@ export default function MapGrid() {
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${map.grid[0].length}, 50px)`,
-          backgroundImage: `url("/src/assets/parchmentBasic.png")`,
+          backgroundImage: `url(${bg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
