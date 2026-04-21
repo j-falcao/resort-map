@@ -1,9 +1,8 @@
 import express from "express";
 import cors from "cors";
 import fs from "fs";
-import path from "path";
 
-import { bookCabana, loadGuests, isCabanaBooked } from "./bookingService";
+import { bookCabana, loadGuests, isCabanaBooked, BookingError } from "./bookingService";
 import { loadMap, parseMap } from "./mapService";
 
 function getArg(flag: string, defaultValue: string) {
@@ -47,44 +46,48 @@ export function startServer() {
     });
 
     app.get("/map", (_, res) => {
-      try {
-        const mapWithAvailability = mapData.grid.map(row =>
-          row.map(tile => {
-            if (tile.type === "cabana") {
-              return {
-                ...tile,
-                available: !isCabanaBooked(tile.id!)
-              };
-            }
-            return tile;
-          })
-        );
+      const mapWithAvailability = mapData.grid.map(row =>
+        row.map(tile => {
+          if (tile.type === "cabana") {
+            return {
+              ...tile,
+              available: !isCabanaBooked(tile.id!)
+            };
+          }
+          return tile;
+        })
+      );
 
-        res.json({ grid: mapWithAvailability });
-      } catch (err) {
-        res.status(500).json({ error: "Failed to load map" });
-      }
+      res.json({ success: true, grid: mapWithAvailability });
     });
 
     app.post("/book", (req, res) => {
       const { cabanaId, room, name } = req.body;
 
-      if (!cabanaId || !room || !name) {
+      if (cabanaId == null || room == null || !name?.trim()) {
         return res.status(400).json({
           success: false,
-          error: "Missing required fields",
+          error: "Missing or invalid required fields",
         });
       }
 
-      const result = bookCabana(cabanaId, room, name);
+      try {
+        const result = bookCabana(cabanaId, room, name);
+        res.json({ success: true, cabanaId: result.cabanaId });
 
-      if (!result.success) {
-        return res.status(400).json(result);
+      } catch (err) {
+        if (err instanceof BookingError) {
+          return res.status(400).json({ success: false, error: err.message });
+        }
+
+        console.error(err);
+        res.status(500).json({ success: false, error: "Failed to book cabana" });
       }
-
-      res.json({ success: true, cabanaId });
     });
 
+    app.use((_, res) => {
+      res.status(404).json({ error: "Not found" });
+    });
 
     // -----------------------
     // START SERVER

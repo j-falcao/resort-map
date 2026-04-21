@@ -54,20 +54,26 @@ export function bookCabana(
   guestName: string
 ) {
   if (!isValidGuest(room, guestName)) {
-    return { success: false, error: "Invalid guest credentials" };
+    throw new BookingError("Invalid guest credentials");
   }
 
   if (bookedCabanas.has(cabanaId)) {
-    return { success: false, error: "Cabana already booked" };
+    throw new BookingError("Cabana already booked");
   }
 
   if (guestsWithBookedCabana.has(`${room}:${guestName}`)) {
-    return { success: false, error: "Guest already has a booked cabana" };
+    throw new BookingError("Guest already has a booked cabana");
   }
 
+  bookedCabanas.add(cabanaId);
   guestsWithBookedCabana.set(`${room}:${guestName}`, cabanaId);
 
-  bookedCabanas.add(cabanaId);
+  return { cabanaId };
+}
 
-  return { success: true };
+export class BookingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "BookingError";
+  }
 }
