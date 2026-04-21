@@ -1,6 +1,7 @@
 import fs from "fs";
 
 const bookedCabanas = new Set<string>();
+const guestsWithBookedCabana = new Map<string, string>();
 
 type Guest = {
   room: string;
@@ -37,6 +38,12 @@ export function bookCabana(
   if (bookedCabanas.has(cabanaId)) {
     return { success: false, error: "Cabana already booked" };
   }
+
+  if (guestsWithBookedCabana.has(`${room}:${guestName}`)) {
+    return { success: false, error: "Guest already has a booked cabana" };
+  }
+
+  guestsWithBookedCabana.set(`${room}:${guestName}`, cabanaId);
 
   bookedCabanas.add(cabanaId);
 
