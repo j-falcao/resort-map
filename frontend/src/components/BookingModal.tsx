@@ -12,6 +12,8 @@ export default function BookingModal({ cabanaId, onClose, onSuccess }: Props) {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
 
   async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -20,8 +22,8 @@ export default function BookingModal({ cabanaId, onClose, onSuccess }: Props) {
 
     try {
       await bookCabana({ cabanaId, room, name });
+      setSuccess(true);
       onSuccess();
-      onClose();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Unexpected error");
     } finally {
@@ -32,41 +34,62 @@ export default function BookingModal({ cabanaId, onClose, onSuccess }: Props) {
   return (
     <div style={overlayStyle} onClick={onClose}>
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-        <h2 style={{ margin: 0 }}>Book Cabana</h2>
-        <p style={{ color: "#666", marginTop: 4 }}>Cabana: {cabanaId}</p>
+        {!success ? (
+          <>
+            <h2 style={{ margin: 0 }}>Book Cabana</h2>
+            <p style={{ color: "#666", marginTop: 4 }}>Cabana: {cabanaId}</p>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <label>
-            Room number
-            <input
-              value={room}
-              onChange={(e) => setRoom(e.target.value)}
-              required
-              style={inputStyle}
-            />
-          </label>
+            <form
+              onSubmit={handleSubmit}
+              style={{ display: "flex", flexDirection: "column", gap: 12 }}
+            >
+              <label>
+                Room number
+                <input
+                  value={room}
+                  onChange={(e) => setRoom(e.target.value)}
+                  required
+                  style={inputStyle}
+                />
+              </label>
 
-          <label>
-            Guest name
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              style={inputStyle}
-            />
-          </label>
+              <label>
+                Guest name
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  style={inputStyle}
+                />
+              </label>
 
-          {error && <div style={errorStyle}>{error}</div>}
+              {error && <div style={errorStyle}>{error}</div>}
 
-          <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-            <button type="submit" disabled={loading} style={primaryButton}>
-              {loading ? "Booking..." : "Confirm"}
+              <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+                <button type="submit" disabled={loading} style={primaryButton}>
+                  {loading ? "Booking..." : "Confirm"}
+                </button>
+                <button type="button" onClick={onClose} style={secondaryButton}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </>
+        ) : (
+          <>
+            <h2 style={{ margin: 0 }}>Booking Confirmed</h2>
+            <p style={{ color: "#666" }}>
+              Cabana <strong>{cabanaId}</strong> has been successfully booked.
+            </p>
+
+            <button
+              onClick={onClose}
+              style={{ ...primaryButton, marginTop: 12 }}
+            >
+              Back to map
             </button>
-            <button type="button" onClick={onClose} style={secondaryButton}>
-              Cancel
-            </button>
-          </div>
-        </form>
+          </>
+        )}
       </div>
     </div>
   );
