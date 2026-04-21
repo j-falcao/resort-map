@@ -47,19 +47,23 @@ export function startServer() {
     });
 
     app.get("/map", (_, res) => {
-      const mapWithAvailability = mapData.grid.map(row =>
-        row.map(tile => {
-          if (tile.type === "cabana") {
-            return {
-              ...tile,
-              available: !isCabanaBooked(tile.id!)
-            };
-          }
-          return tile;
-        })
-      );
+      try {
+        const mapWithAvailability = mapData.grid.map(row =>
+          row.map(tile => {
+            if (tile.type === "cabana") {
+              return {
+                ...tile,
+                available: !isCabanaBooked(tile.id!)
+              };
+            }
+            return tile;
+          })
+        );
 
-      res.json({ grid: mapWithAvailability });
+        res.json({ grid: mapWithAvailability });
+      } catch (err) {
+        res.status(500).json({ error: "Failed to load map" });
+      }
     });
 
     app.post("/book", (req, res) => {
