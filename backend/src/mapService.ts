@@ -10,6 +10,24 @@ export function loadMap(filePath: string): string[] {
 }
 
 export function parseMap(lines: string[]): ParsedMap {
+  if (lines.length === 0) {
+    throw new Error("Map cannot be empty");
+  }
+
+  const width = lines[0].length;
+
+  // ----------------------------
+  // GRID SHAPE VALIDATION
+  // ----------------------------
+  for (let i = 1; i < lines.length; i++) {
+    if (lines[i].length !== width) {
+      throw new Error(
+        `Invalid map: row ${i} has length ${lines[i].length}, expected ${width}`
+      );
+    }
+  }
+
+  
   let cabanaCounter = 1;
 
   const grid: Tile[][] = lines.map(row =>
