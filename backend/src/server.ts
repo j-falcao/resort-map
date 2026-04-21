@@ -23,8 +23,8 @@ export function startServer() {
     // -----------------------
     // CLI CONFIG
     // -----------------------
-    const mapPath = path.resolve(getArg("--map", "map.ascii"));
-    const bookingsPath = path.resolve(getArg("--bookings", "bookings.json"));
+    const mapPath = getArg("--map", "map.ascii");
+    const bookingsPath = getArg("--bookings", "bookings.json");
 
     validateFile(mapPath, "Map");
     validateFile(bookingsPath, "Bookings");
