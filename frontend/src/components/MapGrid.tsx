@@ -41,6 +41,9 @@ export default function MapGrid() {
           backgroundImage: `url(${bg})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          border: "4px solid #444",
+          borderRadius: "12px",
+          boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
         }}
       >
         {map.grid.map((row, r) =>
