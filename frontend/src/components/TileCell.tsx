@@ -175,7 +175,7 @@ export default function TileCell({ tile, row, col, grid, onCabanaClick }: Props)
             e.currentTarget.style.transform = "scale(1)";
           }}
         >
-          <img src={cabanaImg} style={imgStyle} alt="cabana" />
+          <img src={cabanaImg} style={imgStyle} alt={`cabana-${tile.id}`} />
 
           {!tile.available && (
             <div
