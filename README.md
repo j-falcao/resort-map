@@ -91,7 +91,7 @@ Example:
 node start.js -- --map ./map.ascii --bookings ./bookings.json
 ```
 
-If not provided, defaults are used:
+If not provided, the following defaults are used:
 - `map.ascii`
 - `bookings.json`
 
@@ -263,7 +263,7 @@ Tests cover core functionality:
 - API responses
 
 ### Frontend
-- Map rendering from API data
+- Map rendering
 - Booking interactions
 - UI updates after state changes
 
