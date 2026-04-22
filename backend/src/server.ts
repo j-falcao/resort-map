@@ -23,8 +23,8 @@ export function createApp(): express.Express {
   // -----------------------
   // CLI CONFIG
   // -----------------------
-  const mapPath = getArg("--map", "../map.ascii");
-  const bookingsPath = getArg("--bookings", "../bookings.json");
+  const mapPath = getArg("--map", "map.ascii");
+  const bookingsPath = getArg("--bookings", "bookings.json");
 
   validateFile(mapPath, "Map");
   validateFile(bookingsPath, "Bookings");
