@@ -77,3 +77,8 @@ export class BookingError extends Error {
     this.name = "BookingError";
   }
 }
+
+export function resetBookings() {
+  bookedCabanas.clear();
+  guestsWithBookedCabana.clear();
+}
